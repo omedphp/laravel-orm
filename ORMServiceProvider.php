@@ -12,7 +12,6 @@ class ORMServiceProvider extends ServiceProvider
 {
     public function boot(Repository $config)
     {
-        $config = $this->app['config'];
         $this->configureRepository($config);
     }
 
