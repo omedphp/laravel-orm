@@ -43,6 +43,6 @@ abstract class ORMTestCase extends BaseTestCase
             mkdir($defPath, 0777, true);
         }
         $app['config']->set('doctrine.managers.default.connection', 'sqlite');
-        $app['config']->set('doctrine.managers.default.paths',[$defPath]);
+        $app['config']->set('doctrine.managers.default.paths', [$defPath]);
     }
 }

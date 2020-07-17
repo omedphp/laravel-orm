@@ -19,7 +19,6 @@ use Omed\Laravel\ORM\Tests\Fixtures\XML\TestXML;
 
 class ORMServiceProviderTest extends TestCase
 {
-
     public function testConfig()
     {
         $extensions = config('doctrine.extensions');
@@ -30,7 +29,7 @@ class ORMServiceProviderTest extends TestCase
     {
         $test = new TestAnnotation();
         $test->setName('foo');
-        /* @var \LaravelDoctrine\ORM\IlluminateRegistry $registry */
+        /** @var \LaravelDoctrine\ORM\IlluminateRegistry $registry */
         $registry = $this->app->get('registry');
         $em = $registry->getManager();
         $em->persist($test);
@@ -42,7 +41,7 @@ class ORMServiceProviderTest extends TestCase
     {
         $test = new TestXML();
         $test->setName('foo');
-        /* @var \LaravelDoctrine\ORM\IlluminateRegistry $registry */
+        /** @var \LaravelDoctrine\ORM\IlluminateRegistry $registry */
         $registry = $this->app->get('registry');
         $em = $registry->getManager();
         $em->persist($test);

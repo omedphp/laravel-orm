@@ -15,9 +15,6 @@ namespace Omed\Laravel\ORM;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
-use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
-use Doctrine\Persistence\Mapping\Driver\AnnotationDriver;
 use Illuminate\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
@@ -31,15 +28,12 @@ class ORMServiceProvider extends ServiceProvider
     public function boot(Repository $config)
     {
         $this->configureRepository($config);
-
     }
 
     public function register()
     {
         $this->registerTargetEntityResolver();
-        BootChain::add([$this,'handleOnDoctrineBoot']);
-
-
+        BootChain::add([$this, 'handleOnDoctrineBoot']);
     }
 
     public function provides()
@@ -51,52 +45,55 @@ class ORMServiceProvider extends ServiceProvider
 
     /**
      * @param IlluminateRegistry $registry
+     *
      * @throws \Doctrine\ORM\ORMException
      */
     public function handleOnDoctrineBoot($registry)
     {
-        /* @var EntityManagerInterface $manager */
-        $managers = config('doctrine.managers',[]);
-        foreach($managers as $name => $settings){
+        /** @var EntityManagerInterface $manager */
+        $managers = config('doctrine.managers', []);
+        foreach ($managers as $name => $settings) {
             $manager = $registry->getManager($name);
             $this->configureEntityManager($name, $manager, $settings);
         }
+
         return;
     }
 
     /**
-     * @param string $managerName
+     * @param string                 $managerName
      * @param EntityManagerInterface $om
-     * @param array $settings
+     * @param array                  $settings
+     *
      * @throws \Doctrine\ORM\ORMException on getMedataDriverImpl
      */
     private function configureEntityManager($managerName, EntityManagerInterface $om, array $settings = [])
     {
-        if(!isset($settings['mappings']) || empty($settings['mappings'])){
+        if (!isset($settings['mappings']) || empty($settings['mappings'])) {
             return;
         }
-        /* @var \LaravelDoctrine\ORM\Extensions\MappingDriverChain $chain */
+        /** @var \LaravelDoctrine\ORM\Extensions\MappingDriverChain $chain */
         $chain = $om->getConfiguration()->getMetadataDriverImpl();
         $mappings = $settings['mappings'];
 
         $annotationDriver = $chain->getDefaultDriver();
-        foreach($mappings as $namespace => $config){
-            $targetManager = isset($config['manager']) ? $config['manager']:'default';
-            if($managerName != $targetManager){
+        foreach ($mappings as $namespace => $config) {
+            $targetManager = $config['manager'] ?? 'default';
+            if ($managerName != $targetManager) {
                 continue;
             }
-            if(!isset($config['paths'])){
+            if (!isset($config['paths'])) {
                 throw new \InvalidArgumentException('Doctrine mappings "paths" config should be configured.');
             }
 
-            $type = isset($config['type']) ? $config['type']:'annotation';
+            $type = $config['type'] ?? 'annotation';
             $paths = $config['paths'];
-            if($type == 'annotation'){
-                $paths = is_string($paths) ? array($paths):$paths;
+            if ('annotation' == $type) {
+                $paths = \is_string($paths) ? [$paths] : $paths;
                 $annotationDriver->addPaths($paths);
-                $chain->addDriver($annotationDriver,$namespace);
+                $chain->addDriver($annotationDriver, $namespace);
             }
-            if($type == 'xml'){
+            if ('xml' == $type) {
                 $xmlDriver = new SimplifiedXmlDriver([$paths => $namespace]);
                 $chain->addDriver($xmlDriver, $namespace);
             }

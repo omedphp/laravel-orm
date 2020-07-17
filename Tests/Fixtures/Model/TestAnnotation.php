@@ -1,29 +1,39 @@
 <?php
 
+/*
+ * This file is part of the Omed project.
+ *
+ * (c) Anthonius Munthi <https://itstoni.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+declare(strict_types=1);
 
 namespace Omed\Laravel\ORM\Tests\Fixtures\Model;
-
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class TestAnnotation
+ * Class TestAnnotation.
  *
- * @ORM\Entity()
- * @package Omed\Laravel\ORM\Tests\Fixtures\Model
+ * @ORM\Entity
  */
 class TestAnnotation
 {
     /**
      * @ORM\Column(type="string")
      * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Id()
+     * @ORM\Id
+     *
      * @var string
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string")
+     *
      * @var string
      */
     protected $name;
@@ -38,11 +48,13 @@ class TestAnnotation
 
     /**
      * @param string $id
+     *
      * @return TestAnnotation
      */
-    public function setId(string $id): TestAnnotation
+    public function setId(string $id): self
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -56,11 +68,13 @@ class TestAnnotation
 
     /**
      * @param string $name
+     *
      * @return TestAnnotation
      */
-    public function setName(string $name): TestAnnotation
+    public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 }
