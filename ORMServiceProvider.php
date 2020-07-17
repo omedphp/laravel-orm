@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Omed\Laravel\ORM;
 
 use Illuminate\Config\Repository;
-use Illuminate\Foundation\Application;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LaravelDoctrine\Extensions\Timestamps\TimestampableExtension;
 use LaravelDoctrine\ORM\BootChain;
@@ -35,17 +35,17 @@ class ORMServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            TargetEntityResolver::class
+            TargetEntityResolver::class,
         ];
     }
 
-
     private function registerTargetEntityResolver()
     {
-        $this->app->singleton(TargetEntityResolver::class, function(Application $app){
-            $config = $app->make('config')->get('doctrine.resolve_target_entities',[]);
+        $this->app->singleton(TargetEntityResolver::class, function (Application $app) {
+            $config = $app->make('config')->get('doctrine.resolve_target_entities', []);
             $resolver = new TargetEntityResolver($config);
-            BootChain::add([$resolver,'handleOnBoot']);
+            BootChain::add([$resolver, 'handleOnBoot']);
+
             return $resolver;
         });
         $this->app->make(TargetEntityResolver::class);

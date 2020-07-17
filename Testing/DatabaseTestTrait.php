@@ -29,6 +29,7 @@ trait DatabaseTestTrait
             $metadatas = array_merge($metadatas, $metadata);
         }
 
+        /** @var \Doctrine\ORM\EntityManagerInterface $em */
         $tool = new SchemaTool($em);
         try {
             $tool->dropSchema($metadatas);
