@@ -13,10 +13,22 @@ declare(strict_types=1);
 
 namespace Omed\Laravel\ORM\Testing;
 
+use LaravelDoctrine\Extensions\GedmoExtensionsServiceProvider;
+use LaravelDoctrine\ORM\DoctrineServiceProvider;
+use Omed\Laravel\ORM\ORMServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class ORMTestCase extends BaseTestCase
 {
+    protected function getPackageProviders($app)
+    {
+        return [
+            DoctrineServiceProvider::class,
+            GedmoExtensionsServiceProvider::class,
+            ORMServiceProvider::class,
+        ];
+    }
+
     protected function getEnvironmentSetUp($app): void
     {
         $app['config']->set('database.default', 'sqlite');
@@ -31,6 +43,6 @@ abstract class ORMTestCase extends BaseTestCase
             mkdir($defPath, 0777, true);
         }
         $app['config']->set('doctrine.managers.default.connection', 'sqlite');
-        $app['config']->set('doctrine.managers.default.paths', [$defPath]);
+        $app['config']->set('doctrine.managers.default.paths',[$defPath]);
     }
 }
