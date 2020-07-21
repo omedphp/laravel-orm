@@ -16,12 +16,9 @@ namespace Omed\Laravel\ORM;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
 use Illuminate\Config\Repository;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use LaravelDoctrine\Extensions\Timestamps\TimestampableExtension;
-use LaravelDoctrine\ORM\BootChain;
 use LaravelDoctrine\ORM\IlluminateRegistry;
-use Omed\Laravel\ORM\Resolvers\TargetEntityResolver;
 
 class ORMServiceProvider extends ServiceProvider
 {
@@ -32,15 +29,6 @@ class ORMServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->registerTargetEntityResolver();
-        BootChain::add([$this, 'handleOnDoctrineBoot']);
-    }
-
-    public function provides()
-    {
-        return [
-            TargetEntityResolver::class,
-        ];
     }
 
     /**
@@ -98,18 +86,6 @@ class ORMServiceProvider extends ServiceProvider
                 $chain->addDriver($xmlDriver, $namespace);
             }
         }
-    }
-
-    private function registerTargetEntityResolver()
-    {
-        $this->app->singleton(TargetEntityResolver::class, function (Application $app) {
-            $config = $app->make('config')->get('doctrine.resolve_target_entities', []);
-            $resolver = new TargetEntityResolver($config);
-            BootChain::add([$resolver, 'handleOnBoot']);
-
-            return $resolver;
-        });
-        $this->app->make(TargetEntityResolver::class);
     }
 
     private function configureRepository(Repository $config)

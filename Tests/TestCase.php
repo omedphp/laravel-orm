@@ -13,14 +13,17 @@ declare(strict_types=1);
 
 namespace Omed\Laravel\ORM\Tests;
 
+use Kilip\LaravelDoctrine\ORM\Testing\ORMTestTrait;
 use Omed\Laravel\ORM\Testing\ORMTestCase;
 
 class TestCase extends ORMTestCase
 {
+    use ORMTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->artisan('doctrine:schema:create');
+        $this->recreateDatabase();
     }
 
     protected function getEnvironmentSetUp($app): void
